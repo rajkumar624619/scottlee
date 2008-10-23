@@ -1,6 +1,6 @@
 //Comment out the following package statement to compile separately.
 package com.okay.validate.srm.copy;
-
+  
 /**
  * ImageDicer provides a grab-bag of image processing operators.
  * This version is compliant with Java 1.2 Beta 4, Aug 1998.

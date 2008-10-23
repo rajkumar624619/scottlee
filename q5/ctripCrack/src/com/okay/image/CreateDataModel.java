@@ -33,7 +33,7 @@ public class CreateDataModel
 	
 	{
 		CreateDataModel cdm = new CreateDataModel();
-		cdm.setSavePath("d://temp//");
+		cdm.setSavePath("d://temp2//");
 		cdm.setShowDetail(true);
 		try
 		{
@@ -78,24 +78,29 @@ public class CreateDataModel
 					ImageData img = new ImageData(bi);
 					img.modify();
 					ImageData _img[] = img.split(1);
+					
 					ImageIO.write(_img[0].getImage(), "jpeg", new File((new StringBuilder(String.valueOf(data_cneter))).append(allStyle_s[i]).append("_").append(c).append(".jpg").toString()));
 					if (isShowDetail())
 						System.out.println((new StringBuilder("final static String ")).append(allStyle_s[i]).append("_").append(c).append(" =\"").append(_img[0].toString()).append("\";").toString());
 				} else
 				if (c >= 'a' && c <= 't')
 				{
-					String c_s = (new StringBuilder()).append(c).toString().toUpperCase();
-					BufferedImage bi = getCharImage((new StringBuilder()).append(c).toString(), allStyle[i]);
+					String c_s = (""+c).toLowerCase();
+					BufferedImage bi = getCharImage((new StringBuilder()).append(c_s).toString(), allStyle[i]);
 					ImageData img = new ImageData(bi);
 					img.modify();
 					ImageData _img[] = img.split(1);
+//					_img[0].show();
 					ImageIO.write(_img[0].getImage(), "jpeg", new File((new StringBuilder(String.valueOf(data_cneter))).append(allStyle_s[i]).append("_LOWERCASE_").append(c_s).append(".jpg").toString()));
 					if (isShowDetail())
 						System.out.println((new StringBuilder("final static String ")).append(allStyle_s[i]).append("_LOWERCASE_").append(c_s).append(" =\"").append(_img[0].toString()).append("\";").toString());
-					BufferedImage ubi = getCharImage((new StringBuilder()).append(c).toString().toUpperCase(), allStyle[i]);
+					
+					c_s = (""+c).toUpperCase();
+					BufferedImage ubi = getCharImage((new StringBuilder()).append(c_s).toString(), allStyle[i]);
 					ImageData uimg = new ImageData(ubi);
 					uimg.modify();
 					ImageData _uimg[] = uimg.split(1);
+//					_uimg[0].show();
 					ImageIO.write(_uimg[0].getImage(), "jpeg", new File((new StringBuilder(String.valueOf(data_cneter))).append(allStyle_s[i]).append("_UPPERCASE_").append(c_s).append(".jpg").toString()));
 					if (isShowDetail())
 						System.out.println((new StringBuilder("final static String ")).append(allStyle_s[i]).append("_UPPERCASE_").append(c_s).append(" =\"").append(_uimg[0].toString()).append("\";").toString());

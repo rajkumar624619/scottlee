@@ -43,12 +43,16 @@ public class Recognize {
 			long start = System.currentTimeMillis();
 			for (BufferedImage img : bia) {
 				ImageData _img = new ImageData(img);
-				// _img.show();
+//				_img.show();
 				_img.removeHorizontalLine();
 				// _img.removeVerticalLine();
 				_img.modify();
+//				 _img.show();
 				ImageData[] d = _img.split(1);
-				// d[0].show();
+//				 d[0].show();
+//				 d[0].doSample().show();
+//				 ImageData[] d2 = d[0].split(1);
+//				 d2[0].show();
 				String simg = d[0].toString();
 				String s = recognizeChar(simg);
 				result.append(s);
@@ -150,7 +154,7 @@ public class Recognize {
 			_img.modify();
 			_img.show();
 			ImageData[] d = _img.split(1);
-//			 d[0].show();
+			 d[0].show();
 			String simg = d[0].toString();
 			String s = recognizeChar(simg);
 
@@ -231,10 +235,10 @@ public class Recognize {
 					s_name = field[i].getName();
 				}
 				
-//				if(distance<50){
-//					System.out.println(s_name+ " distance: "+distance);
-//					break;
-//				}
+				if(distance<30){
+					System.out.println(field[i].getName()+ " distance: "+temp);
+					break;
+				}
 			}
 
 		} catch (IllegalArgumentException e) {

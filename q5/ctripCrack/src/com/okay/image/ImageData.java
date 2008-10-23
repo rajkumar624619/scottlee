@@ -23,7 +23,8 @@ public class ImageData {
 	public int data[][];
 	public int w;
 	public int h;
-	public char code;
+
+	// public char code;
 
 	public ImageData() {
 	}
@@ -111,8 +112,61 @@ public class ImageData {
 		this.split(1);
 	}
 
+	
+	public String getDescCode(){
+		StringBuffer sb = new StringBuffer();
+		int hh[] = new int[h];
+		for (int i = 0; i < h; i++) {
+			int sum=0;
+			for (int j = 0; j < w; j++){
+				sum+=data[i][j];
+			}
+			hh[i]=sum;
+			if(i>0){
+				if(hh[i]>hh[i-1]){
+					sb.append("1");
+				}else{
+					sb.append("0");
+				}
+			}	
+		}
+		
+		hh = new int[w];
+		
+		for (int i = 0; i < w; i++) {
+			int sum=0;
+			for (int j = 0; j < h; j++){
+				sum+=data[j][i];
+			}
+			hh[i]=sum;
+			if(i>0){
+				if(hh[i]>hh[i-1]){
+					sb.append("1");
+				}else{
+					sb.append("0");
+				}
+			}	
+		}
+//		System.out.println("Code: "+sb.toString());
+		return sb.toString();
+	}
+	
+	
+	public String toString1() {
+		return this.getDescCode();
+	}
+	
+	
 	public String toString() {
 		StringBuffer _buf = new StringBuffer();
+
+//		ImageData id = this.doSample();
+//		for (int i = 0; i < id.h; i++) {
+//			for (int j = 0; j < id.w; j++)
+//				_buf.append(id.data[i][j]);
+//		
+//		 }
+
 		for (int i = 0; i < h; i++) {
 			for (int j = 0; j < w; j++)
 				_buf.append(data[i][j]);
@@ -227,12 +281,6 @@ public class ImageData {
 					indexs++;
 				}
 			}
-			// System.out.println("-------------");
-			// for (int i = 0; i < posx.length; i++) {
-			// System.out.print("\t" + posx[i]);
-			// }
-			// System.out.println("");
-			// System.out.println("-------------");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -240,7 +288,10 @@ public class ImageData {
 	}
 
 	public int[] getSplitPointsX(int charNum) {
-		int minWidth = 0;
+
+		// this.show();
+
+		int minWidth = 20;
 		StringBuffer _buf = new StringBuffer();
 		for (int i = 0; i < w; i++) {
 			int temp = 0;
@@ -251,14 +302,26 @@ public class ImageData {
 		}
 
 		String sample = _buf.toString();
+
+		// System.out.println("sample:"+ sample);
+
 		String str[] = sample.split("#+");
 		int lens[] = new int[str.length];
-		for (int i = 0; i < str.length; i++)
+		for (int i = 0; i < str.length; i++) {
 			lens[i] = str[i].length();
-
+		}
 		Arrays.sort(lens);
-		minWidth = lens[lens.length - charNum - 1] + 1;
+
+		// System.out.println("lens[lens.length - charNum - 1]:
+		// "+lens[lens.length - charNum - 1]);
+		if (lens.length > charNum) {
+			minWidth = lens[lens.length - charNum - 1] + 1;
+		} else {
+			Logger.getLogger("ImageDate.class").log(Level.WARNING,
+					"Can't split!May be error!");
+		}
 		int posx[] = new int[charNum * 2];
+
 		int indexs = 0;
 		int tempx = 0;
 		for (int i = 0; i < str.length; i++) {
@@ -272,40 +335,47 @@ public class ImageData {
 			}
 			tempx = tempx != 0 ? tempx : 1;
 		}
-//		System.out.println("w: " + w + "h: " + h + " posx: " + posx[0] + " "
-//				+ posx[1]);
+		// System.out.println("w: " + w + "h: " + h + " posx: " + posx[0] + " "
+		// + posx[1]);
+
+		// XXX temp crack
+		if (charNum == 1 && (posx[1] - posx[0]) < 14 && w > 24) {
+			posx[0] = w / 2 - 12;
+			posx[1] = w / 2 + 12;
+			return posx;
+		}
+
 		return posx;
 	}
 
 	public int[] getSplitPointsY() {
-		System.out.println("w: "+w +" h: "+h);
-		int minWidth = 0;
+		int minWidth = 20;
 		StringBuffer _buf = new StringBuffer();
 		for (int i = 0; i < h; i++) {
 			int temp = 0;
-			for (int j = 0; j < w; j++){
+			for (int j = 0; j < w; j++) {
 				temp += data[i][j];
 			}
 			_buf.append(Math.abs(temp - w) != 0 ? "@" : "#");
 		}
 
 		String sample = _buf.toString();
-		System.out.println("sample: "+sample);
+//		 System.out.println("sample: "+sample);
 		String str[] = sample.split("#+");
 		int lens[] = new int[str.length];
-		for (int i = 0; i < str.length; i++){
+		for (int i = 0; i < str.length; i++) {
 			lens[i] = str[i].length();
 		}
 
 		Arrays.sort(lens);
-		try {
+
+		if (lens.length > 1) {
 			minWidth = lens[lens.length - 1] - 1;
-		} catch (RuntimeException e) {
-			e.printStackTrace();
-			minWidth = 0;
+		} else {
 			Logger.getLogger("ImageDate.class").log(Level.WARNING,
 					"Can't split!May be error!");
 		}
+
 		int posy[] = new int[2];
 		int indexs = 0;
 		int tempx = 0;
@@ -318,13 +388,14 @@ public class ImageData {
 				posy[indexs] = posy[indexs - 1] + str[i].length();
 				indexs++;
 			}
-
+//		System.out.println(posy[0]+ " "+ posy[1]);
 		return posy;
 	}
 
 	public ImageData[] split(int charNum) {
 		ImageData sub[] = new ImageData[charNum];
 		int splitPoints[] = getSplitPointsX(charNum);
+
 		for (int i = 0; i < charNum; i++) {
 			int lbound = splitPoints[2 * i];
 			int ubound = splitPoints[2 * i + 1];
@@ -332,7 +403,8 @@ public class ImageData {
 			int posy = 0;
 			int posx1 = ubound;
 			int posy1 = h;
-//			System.out.println(posx+" "+ posy+" "+ (posx1 - posx)+" "+ (posy1 - posy));
+			// System.out.println(posx+" "+ posy+" "+ (posx1 - posx)+" "+ (posy1
+			// - posy));
 			sub[i] = clone(posx, posy, posx1 - posx, posy1 - posy);
 			int posys[] = sub[i].getSplitPointsY();
 			sub[i] = clone(posx, posys[0], posx1 - posx, posys[1] - posys[0]);
@@ -340,7 +412,40 @@ public class ImageData {
 
 		return sub;
 	}
-	
+
+	public ImageData doSample() {
+		int sampleRange = 4;
+		int sampleRate = 2;
+		ImageData sample = new ImageData();
+		// System.out.println("w: " + w + " h: " + h + " " + w / sampleRate+ " "
+		// + h / sampleRate );
+		sample.data = new int[h / sampleRate + 1][w / sampleRate + 1];
+		sample.h = h / sampleRate ;
+		sample.w = w / sampleRate ;
+		for (int i = 0; i < h - (sampleRate-1); i = i + sampleRate) {
+			if (i == 0 || i == h - (sampleRate-1)) {
+				for (int j = 0; j < w; j = j + sampleRate)
+					sample.data[i / sampleRate][j / sampleRate] = 1;
+
+			} else {
+				for (int j = 0; j < w - (sampleRate-1); j = j + sampleRate) {
+					if (j == 0 || j == w - 1) {
+						sample.data[i / sampleRate][j / sampleRate] = 1;
+					} else if (data[i][j] + data[i + 1][j] // + data[i+2][j]
+							+ data[i][j + 1] + data[i + 1][j + 1] // +
+					// data[i+1][j+1]
+					// + data[i][j+2]+ data[i +1][j+2] + data[i+1][j+2]
+					>= 2) {
+						sample.data[i / sampleRate][j / sampleRate] = 1;
+					}
+					// sample.show();
+				}
+			}
+		}
+		// sample.show();
+		return sample;
+	}
+
 	public void writeImg(File imgName) throws IOException {
 		try {
 			BufferedImage img = new BufferedImage(this.w, this.h,
@@ -360,5 +465,16 @@ public class ImageData {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedImage bi = ImageIO.read(new File(
+				"D:\\temp2\\MODEL_BOLD_LOWERCASE_e.bmp"));
+		ImageData data = new ImageData(bi);
+		data.show();
+		data.getDescCode();
+		ImageData d = data.doSample();
+		d.getDescCode();
+		d.show();
 	}
 }

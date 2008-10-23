@@ -37,8 +37,8 @@ public class ImageDecoderTest extends TestCase {
 	
 	public void testSingle2() throws IllegalArgumentException, IOException, IllegalAccessException{
 		long start =System.currentTimeMillis();
-		File f = new File("D:\\frk4aD.jpg");
-//		File f = new File("D:\\work\\CtripTest\\base\\sample\\c2\\n4enMj.jpg");
+//		File f = new File("D:\\work\\CtripTest\\base\\sample\\e1\\5rDBFi.jpg");
+		File f = new File("D:\\work\\CtripTest\\base\\sample\\c2\\Rh8k4N.jpg");
 		String code = CtripDecoder.decode(f);
 		long end = System.currentTimeMillis();
 		System.out.println(f.getName()+" "+ code +" "+(end-start) +" ms consumed.");
@@ -55,9 +55,12 @@ public class ImageDecoderTest extends TestCase {
 			count++;
 //			String code = ImageDecoder.decode(f);
 			String code = CtripDecoder.decode(f);
-			System.out.println(f.getName()+" "+ code);
+			
 			if(code.equals(Util.getNameOnly(f.getName()))){
 				right_count++;
+				System.out.println(f.getName()+" "+ code +" OK. " );
+			}else{
+				System.out.println(f.getName()+" "+ code +" Fail. " );
 			}
 		}
 		System.out.println("Count: "+ count+ " right: "+ right_count);
